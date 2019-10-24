@@ -1,0 +1,37 @@
+----- Cache Simulator V1 ----- Created By Kyle Grewe
+Built on 64 Bit Linux
+Platform independent if JVM is installed.
+
+1. To run the cache simulator you must have a JVM installed on the system.  Once the JVM is installed, you may proceed.
+
+2. The executable JAR file CacheSimulator-0.0.1-SNAPSHOT.jar is located in /target directory along with the trace.din and memory traces from linpack and dhrystone as linpacktrace.out and dhrystonetrace.out.
+
+3. java -jar [jarfile] [arg1] [arg2]... etc. is the format to run the jar.
+
+4.This application takes in 6 arguments in order as specified below.  Order matters.
+
+ARGUMENTS FORMAT
+
+[type] [cachesize] [blocksize] [associativity] [inputfilename] [outputfilename]
+
+type: The type of cache - split or unified.
+     values: s = split, u = unified
+cachesize: The total cache size in bytes.
+     values: any multiple of two
+blocksize: The block size for each block in the cache in bytes.
+     values: any multiple of two
+associativity: The associativity of the cache.  Use 1 for direct mapped.
+     values: any multiple of two
+inputfilename: The name of the input file to use for the simulation.
+     values: a string
+outputfilename: The name of the output file to create with results.
+     values: a string
+     
+     ***Example 1: java -jar CacheSimulator-0.0.1-SNAPSHOT.jar u 16384 32 4 linpacktrace.out linpackresults
+     Simulates a unified 16K cache with block size of 32 and associativity of 4.  Input file is the linpacktrace.out and linpackresults is the output filename.
+	 ***Example 2: java -jar CacheSimulator-0.0.1-SNAPSHOT.jar s 32768 32 4 linpacktrace.out linpackresults
+	 Simulates a split cache each with size 16K, block size of 32 and associativity of 4. Input file is the linpacktrace.out and linpackresults is the output filename.
+
+5. LRU replacement policy is assumed.
+
+6. If a split cache is specified, the input block size and associativity will be used for both caches and input cache size will be split and two and used as each split caches size.
