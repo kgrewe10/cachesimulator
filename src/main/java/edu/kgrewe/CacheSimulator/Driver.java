@@ -18,7 +18,7 @@ import edu.kgrewe.CacheSimulator.cache.CacheSim;
  *
  */
 public class Driver {
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) {
 		// If there a no arguments, throw an error.
 		if (args.length == 0) {
 			System.out.println("You must enter arguments.  Type in help as a parameter for more info.");

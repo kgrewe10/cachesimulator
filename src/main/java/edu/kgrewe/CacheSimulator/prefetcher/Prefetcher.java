@@ -9,12 +9,14 @@ import edu.kgrewe.CacheSimulator.utility.Utility;
 
 public class Prefetcher {
 	List<Block> fetchedBlocks;
-	List<List<Long>> table = new ArrayList<List<Long>>();
+	List<ArrayList<Long>> table;
 	long maxConfidence;
 	long bufferSize;
 	long numBlocks;
 	long prefetchBits;
 	long timesNotUsedDecrease;
+	String onePrev;
+	String twoPrev;
 
 	public Prefetcher(long bs, long pb, long cacheSize) {
 		// Validate the prefetcher bits.
@@ -29,12 +31,16 @@ public class Prefetcher {
 			System.exit(0);
 		}
 
-		//Assign all needed data.
+		// Assign all needed data.
 		bufferSize = bs;
 		prefetchBits = pb;
 		numBlocks = bufferSize / cacheSize;
 		timesNotUsedDecrease = 10;
 		maxConfidence = Utility.getPower(Integer.parseInt(Long.toString(prefetchBits)));
+		fetchedBlocks = new ArrayList<Block>();
+		table = new ArrayList<ArrayList<Long>>();
+		onePrev = "";
+		twoPrev = "";
 
 		// Add the number of blocks the prefetcher can hold to the array.
 		for (int i = 0; i < numBlocks; i++) {
@@ -48,8 +54,86 @@ public class Prefetcher {
 			}
 		}
 	}
-	
+
+	/**
+	 * Monitors the lowest level of cache, for this program it monitors L1.
+	 * 
+	 * @param addr   The address requested from the cache.
+	 * @param result Cache hit or miss.
+	 */
+	public void monitor(Address addr, boolean result) {
+		String current = addr.getAddress();
+		// System.out.println("Address " + current);
+
+		// Remove LSBs.
+		current = current.substring(0, current.length() - 3);
+
+		// System.out.println("Address removed 3 LSB" + current);
+		StringBuilder bin = new StringBuilder(Utility.hexToBin(current));
+		// System.out.println("Binary " + bin);
+
+		if (bin.length() < 64) {
+			int add = 64 - bin.length();
+			for (int i = 0; i < add; i++) {
+				bin.insert(0, "0");
+			}
+		}
+
+		// Change the address to decimal.
+		long tag = 0;
+		try {
+			tag = Long.parseLong(Utility.BinToDec(bin.toString()));
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		// Check to see if there was a hit on a stride in the pattern table.
+		for (int i = 0; i < numBlocks; i++) {
+			if (tag == table.get(i).get(3)) {
+
+			}
+		}
+
+	}
+
+	/**
+	 * Simulates a memory request being sent to the prefetcher.
+	 * 
+	 * @return true=hit, false=miss.
+	 */
 	public boolean request(Address addr) {
+		String current = addr.getAddress();
+		// System.out.println("Address " + current);
+
+		// Remove LSBs.
+		current = current.substring(0, current.length() - 3);
+
+		// System.out.println("Address removed 3 LSB" + current);
+		StringBuilder bin = new StringBuilder(Utility.hexToBin(current));
+		// System.out.println("Binary " + bin);
+
+		if (bin.length() < 64) {
+			int add = 64 - bin.length();
+			for (int i = 0; i < add; i++) {
+				bin.insert(0, "0");
+			}
+		}
+
+		// Change the address to decimal.
+		long tag = 0;
+		try {
+			tag = Long.parseLong(Utility.BinToDec(bin.toString()));
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		for (int i = 0; i < numBlocks; i++) {
+			if (tag == fetchedBlocks.get(i).getTag()) {
+				return true;
+			}
+		}
 		return false;
 	}
 
