@@ -19,6 +19,8 @@ READ BEFORE RUNNING APPLICATION:
 
 6. |||Determine how you want to run||| 6 arguments: cache simulation, 8 arguments: cache simulation with prefetcher
 
+
+
 ARGUMENTS FORMAT
 
 [type] [cachesize] [blocksize] [associativity] [inputfilename] [outputfilename] OPTIONAL [prefetchbuffer] [confidencebits]
@@ -45,6 +47,8 @@ prefetchbuffer: The size of the prefetcher memory.
 confidencebits: The number of bits to use to determine confidence.
      values: 2 or 3
 
+
+
 *******EXAMPLE CONSOLE INPUT*******
 [CACHE SIM ONLY]
 Example 1: java -jar CacheSimulator-0.0.1-SNAPSHOT.jar u 16384 32 4 linpacktrace.out linpackresults
@@ -65,6 +69,8 @@ Example 2: java -jar CacheSimulator-0.0.1-SNAPSHOT.jar u 16384 32 4 linpacktrace
 	Simulates a unified 16K cache with block size of 32 and associativity of 4.
 	Prefetcher enabled buffer size 2048 and 3 confidence bits.
 	Input file is the linpacktrace.out and linresults is the output filename.
+
+
 
 5. LRU replacement policy is assumed.
 
