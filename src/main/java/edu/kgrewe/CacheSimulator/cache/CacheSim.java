@@ -177,7 +177,7 @@ public class CacheSim {
 			message = "\n[CACHE RESULTS]\nUnified Cache\nDemand Fetches: " + addresses.size() + "\nDemand Misses: "
 					+ unifiedMisses + "\nDemand Miss Rate: " + df4.format(missDouble / addresses.size());
 			if (pre) {
-				message = message.concat("\n\n[PREFETCH RESULTS]\nPrefetch Fetches: " + totalPrefetch
+				message = message.concat("\n\n[PREFETCH RESULTS]\nCache Misses Sent to Prefetcher: " + totalPrefetch
 						+ "\nPrefetch Misses: " + prefetchMisses + "\nPrefetch Miss Rate: "
 						+ df4.format(missPrefetchDouble / totalPrefetch) + "\nCoverage: "
 						+ df4.format((totalPrefetch - prefetchMisses) / (missDouble)) + "\n\nTotal Cache Miss Rate: "
@@ -196,7 +196,7 @@ public class CacheSim {
 				+ "\nDemand Miss Rate: " + df4.format(missDataDouble / totalData);
 		if (pre) {
 			message = message.concat("\n\n[PREFETCH RESULTS]\nPrefetch Fetches: " + totalPrefetch
-					+ "\nPrefetch Misses: " + prefetchMisses + "\nPrefetch Miss Rate: "
+					+ "\nCache Misses Sent to Prefetcher: " + prefetchMisses + "\nPrefetch Miss Rate: "
 					+ df4.format(missPrefetchDouble / totalPrefetch) + "\nCoverage: "
 					+ df4.format((totalPrefetch - prefetchMisses) / (missInstrDouble + missDataDouble))
 					+ "\n\nTotal Cache Miss Rate: "

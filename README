@@ -1,6 +1,11 @@
------ Cache Simulator V1 ----- Created By Kyle Grewe
-Built on 64 Bit Linux
-Platform independent if JVM is installed.
+----- Cache Simulator V1 with Prefetcher ----- 
+-----------Created By Kyle Grewe--------------
+----------------------------------------------
+
+-Built on 64 Bit Linux
+-Platform independent if JVM is installed.
+
+READ BEFORE RUNNING APPLICATION:
 
 1. To run the cache simulator you must have a JVM installed on the system.  Once the JVM is installed, you may proceed.
 
@@ -8,11 +13,15 @@ Platform independent if JVM is installed.
 
 3. java -jar [jarfile] [arg1] [arg2]... etc. is the format to run the jar.
 
-4.This application takes in 6 arguments in order as specified below.  Order matters.
+4. To enter the help menu: java -jar CacheSimulator-0.0.1-SNAPSHOT.jar help
+
+5. This application takes in 6 or 8 arguments in order as specified below.  Order matters.
+
+6. |||Determine how you want to run||| 6 arguments: cache simulation, 8 arguments: cache simulation with prefetcher
 
 ARGUMENTS FORMAT
 
-[type] [cachesize] [blocksize] [associativity] [inputfilename] [outputfilename]
+[type] [cachesize] [blocksize] [associativity] [inputfilename] [outputfilename] OPTIONAL [prefetchbuffer] [confidencebits]
 
 type: The type of cache - split or unified.
      values: s = split, u = unified
@@ -26,11 +35,36 @@ inputfilename: The name of the input file to use for the simulation.
      values: a string
 outputfilename: The name of the output file to create with results.
      values: a string
-     
-     ***Example 1: java -jar CacheSimulator-0.0.1-SNAPSHOT.jar u 16384 32 4 linpacktrace.out linpackresults
-     Simulates a unified 16K cache with block size of 32 and associativity of 4.  Input file is the linpacktrace.out and linpackresults is the output filename.
-	 ***Example 2: java -jar CacheSimulator-0.0.1-SNAPSHOT.jar s 32768 32 4 linpacktrace.out linpackresults
-	 Simulates a split cache each with size 16K, block size of 32 and associativity of 4. Input file is the linpacktrace.out and linpackresults is the output filename.
+
+-----------------------------------------
+OPTIONAL ARGUMENTS
+-----------------------------------------
+
+prefetchbuffer: The size of the prefetcher memory.
+     values: any multiple of two
+confidencebits: The number of bits to use to determine confidence.
+     values: 2 or 3
+
+*******EXAMPLE CONSOLE INPUT*******
+[CACHE SIM ONLY]
+Example 1: java -jar CacheSimulator-0.0.1-SNAPSHOT.jar u 16384 32 4 linpacktrace.out linpackresults
+	Simulates a unified 16K cache with block size of 32 and associativity of 4.  
+	Input file is the linpacktrace.out and linpackresults is the output filename.
+
+Example 2: java -jar CacheSimulator-0.0.1-SNAPSHOT.jar s 32768 32 4 linpacktrace.out linpackresults
+	Simulates a split cache each with size 16K, block size of 32 and associativity of 4. 
+	Input file is the linpacktrace.out and linpackresults is the output filename.
+	 
+[CACHE SIM WITH PREFETCHER]
+Example 1: java -jar CacheSimulator-0.0.1-SNAPSHOT.jar u 16384 32 4 dhrystonetrace.out dryresults 4096 2
+	Simulates a unified 16K cache with block size of 32 and associativity of 4.
+	Prefetcher enabled buffer size 4096 and 2 confidence bits.
+	Input file is the dhrystonetrace.out and dryresults is the output filename.
+	
+Example 2: java -jar CacheSimulator-0.0.1-SNAPSHOT.jar u 16384 32 4 linpacktrace.out linresults 2048 3
+	Simulates a unified 16K cache with block size of 32 and associativity of 4.
+	Prefetcher enabled buffer size 2048 and 3 confidence bits.
+	Input file is the linpacktrace.out and linresults is the output filename.
 
 5. LRU replacement policy is assumed.
 
