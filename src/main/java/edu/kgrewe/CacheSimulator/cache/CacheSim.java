@@ -177,8 +177,8 @@ public class CacheSim {
 			message = "\n[CACHE RESULTS]\nUnified Cache\nDemand Fetches: " + addresses.size() + "\nDemand Misses: "
 					+ unifiedMisses + "\nDemand Miss Rate: " + df4.format(missDouble / addresses.size());
 			if (pre) {
-				message = message.concat("\n\n[PREFETCH RESULTS]\nCache Misses Sent to Prefetcher: " + totalPrefetch
-						+ "\nPrefetch Misses: " + prefetchMisses + "\nPrefetch Miss Rate: "
+				message = message.concat("\n\n[PREFETCH RESULTS]\nCache Misses: " + totalPrefetch
+						+ "\nPrefetcher Misses: " + prefetchMisses + "\nPrefetch Miss Rate: "
 						+ df4.format(missPrefetchDouble / totalPrefetch) + "\nCoverage: "
 						+ df4.format((totalPrefetch - prefetchMisses) / (missDouble)) + "\n\nTotal Cache Miss Rate: "
 						+ df4.format(((missDouble - (totalPrefetch - prefetchMisses)) / addresses.size())));
@@ -195,10 +195,9 @@ public class CacheSim {
 				+ "\n\nData\n---------------\nDemand Fetches: " + totalData + "\nDemand Misses: " + dataMisses
 				+ "\nDemand Miss Rate: " + df4.format(missDataDouble / totalData);
 		if (pre) {
-			message = message.concat("\n\n[PREFETCH RESULTS]\nPrefetch Fetches: " + totalPrefetch
-					+ "\nCache Misses Sent to Prefetcher: " + prefetchMisses + "\nPrefetch Miss Rate: "
-					+ df4.format(missPrefetchDouble / totalPrefetch) + "\nCoverage: "
-					+ df4.format((totalPrefetch - prefetchMisses) / (missInstrDouble + missDataDouble))
+			message = message.concat("\n\n[PREFETCH RESULTS]\nCache Misses: " + totalPrefetch + "\nPrefetcher Misses: "
+					+ prefetchMisses + "\nPrefetch Miss Rate: " + df4.format(missPrefetchDouble / totalPrefetch)
+					+ "\nCoverage: " + df4.format((totalPrefetch - prefetchMisses) / (missInstrDouble + missDataDouble))
 					+ "\n\nTotal Cache Miss Rate: "
 					+ df4.format((((missInstrDouble + missDataDouble) - (totalPrefetch - prefetchMisses))
 							/ addresses.size())));

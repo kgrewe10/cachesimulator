@@ -328,7 +328,7 @@ public class StridePrefetcher {
 
 				if (!inMem) {
 					System.out.println(
-							"Prefetching addr: " + table.get(i).get(2) + " at confidence " + table.get(i).get(3));
+							"Prefetching address " + table.get(i).get(2) + " at confidence " + table.get(i).get(3));
 					prefetch(table.get(i).get(2));
 				}
 			}
