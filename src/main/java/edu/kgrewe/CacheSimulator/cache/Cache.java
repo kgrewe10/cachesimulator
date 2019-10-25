@@ -103,7 +103,15 @@ public class Cache {
 		// Get the address.
 		String addy = addr.getAddress();
 		// System.out.println("Address " + addy);
-		StringBuilder bin = new StringBuilder(Utility.hexToBin(addy));
+		StringBuilder bin = null;
+
+		// Ensure the address is legit.
+		try {
+			bin = new StringBuilder(Utility.hexToBin(addy));
+		} catch (Exception e) {
+			return false;
+		}
+
 		// System.out.println("Binary " + bin);
 
 		if (bin.length() < 64) {

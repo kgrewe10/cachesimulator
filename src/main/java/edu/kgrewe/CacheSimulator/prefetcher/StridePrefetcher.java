@@ -22,7 +22,7 @@ public class StridePrefetcher {
 	private long numBlocks;
 	private long prefetchBits;
 	private long prefetchBaseline;
-	static final long TIMES_TO_DECREASE = 100000;
+	static final long TIMES_TO_DECREASE = 200000;
 	static final int NUM_LSB = 3;
 	private String currentAddr;
 	private long onePrev;

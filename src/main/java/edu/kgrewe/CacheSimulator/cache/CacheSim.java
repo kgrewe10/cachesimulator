@@ -101,9 +101,10 @@ public class CacheSim {
 							if (prefetchHit == false) {
 								prefetchMisses++;
 							}
+							prefetcher.monitor(addr, unifiedHit);
 						}
 					}
-					prefetcher.monitor(addr, unifiedHit);
+
 				} else {
 					// Split data cache.
 					totalData++;
@@ -122,10 +123,9 @@ public class CacheSim {
 							if (prefetchHit == false) {
 								prefetchMisses++;
 							}
+							prefetcher.monitor(addr, dataHit);
 						}
 					}
-
-					prefetcher.monitor(addr, dataHit);
 				}
 				break;
 			case 2:
@@ -142,10 +142,10 @@ public class CacheSim {
 							if (prefetchHit == false) {
 								prefetchMisses++;
 							}
+							prefetcher.monitor(addr, unifiedHit);
 						}
 					}
 
-					prefetcher.monitor(addr, unifiedHit);
 				} else {
 					// Split instruction cache.
 					totalInstr++;
@@ -160,9 +160,10 @@ public class CacheSim {
 							if (prefetchHit == false) {
 								prefetchMisses++;
 							}
+							prefetcher.monitor(addr, instrHit);
 						}
 					}
-					prefetcher.monitor(addr, instrHit);
+
 				}
 				break;
 			}

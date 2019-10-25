@@ -92,13 +92,17 @@ public class Driver {
 				System.exit(0);
 			}
 
-			if (!Utility.isPowerOfTwo(totalsize) || !Utility.isPowerOfTwo(blocksize) || !Utility.isPowerOfTwo(assoc)
-					|| !Utility.isPowerOfTwo(buffer)) {
+			if (!Utility.isPowerOfTwo(totalsize) || !Utility.isPowerOfTwo(blocksize)) {
 				System.out.println("Number not a multiple of two.  Rerun and try again.");
 				System.exit(0);
 			}
 
-			if (confidenceBits < 2 || confidenceBits > 3) {
+			if (!Utility.isPowerOfTwo(assoc) || !Utility.isPowerOfTwo(buffer) && args.length == 8) {
+				System.out.println("Number not a multiple of two.  Rerun and try again.");
+				System.exit(0);
+			}
+
+			if ((confidenceBits < 2 || confidenceBits > 3) && args.length == 8) {
 				System.out.println("Confidence bits out of range.  Must be 2 or 3.  Rerun and try again.");
 				System.exit(0);
 			}
