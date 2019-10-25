@@ -29,6 +29,27 @@ public class Utility {
 		return new BigInteger(s, 2).toString(10);
 	}
 
+	public static String hexToDec(String s) {
+		return new BigInteger(s, 16).toString(10);
+	}
+
+	public static boolean isPowerOfTwo(int n) {
+		if (n <= 0)
+			return false;
+
+		while (n > 2) {
+			int t = n >> 1;
+			int c = t << 1;
+
+			if (n - c != 0)
+				return false;
+
+			n = n >> 1;
+		}
+
+		return true;
+	}
+
 	public static int findIndex(int arr[], int t) {
 		int index = Arrays.binarySearch(arr, t);
 		return (index < 0) ? -1 : index;

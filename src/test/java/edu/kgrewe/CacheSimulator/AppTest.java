@@ -12,11 +12,23 @@ import junit.framework.TestSuite;
  */
 public class AppTest {
 	public static void main(String args[]) {
-		System.out.println(getPower(5));
+		System.out.println(isPowerOfTwo(0));
 	}
 	
-	public static int getPower(int num) {
-		int arr[] = {0, 1, 5};
-		return Utility.findIndex(arr, num);
+	public static boolean isPowerOfTwo(int n) {
+		if (n <= 0)
+			return false;
+
+		while (n > 2) {
+			int t = n >> 1;
+			int c = t << 1;
+
+			if (n - c != 0)
+				return false;
+
+			n = n >> 1;
+		}
+
+		return true;
 	}
 }

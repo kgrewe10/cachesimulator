@@ -12,6 +12,8 @@ import edu.kgrewe.CacheSimulator.address.DataWrite;
 import edu.kgrewe.CacheSimulator.address.InstructionFetch;
 import edu.kgrewe.CacheSimulator.cache.Cache;
 import edu.kgrewe.CacheSimulator.cache.CacheSim;
+import edu.kgrewe.CacheSimulator.prefetcher.StridePrefetcher;
+import edu.kgrewe.CacheSimulator.utility.Utility;
 
 /**
  * Drives the program.
@@ -32,11 +34,14 @@ public class Driver {
 		int assoc = 0;
 		String filein = null;
 		String fileout = null;
+		int buffer = 0;
+		int confidenceBits = 0;
 		File out = null;
 		PrintWriter printer = null;
+		boolean prefetcher = false;
 
 		// If the number of arguments is 1 or 5, do something.
-		if (args.length == 6 || args.length == 1) {
+		if (args.length == 8 || args.length == 6 || args.length == 1) {
 			// Print out info if help is first argument.
 			if (args[0].equals("help") || args.length == 1) {
 				System.out.println("Cache Simulator\n\nHELP MENU");
@@ -45,7 +50,8 @@ public class Driver {
 				System.out.println(
 						"If a split cache is specified, the entered blocksize and associativity will be used for both instruction and data caches with total cache size split equally between both.");
 				System.out.println("\nARGUMENTS FORMAT\n");
-				System.out.println("[type] [cachesize] [blocksize] [associativity] [inputfilename] [outputfilename]\n");
+				System.out.println(
+						"[type] [cachesize] [blocksize] [associativity] [inputfilename] [outputfilename] OPTIONAL [prefetchbuffer] [confidencebits]\n");
 				System.out.println("type: The type of cache - split or unified.");
 				System.out.println("     values: s = split, u = unified");
 				System.out.println("cachesize: The total cache size in bytes.");
@@ -57,7 +63,14 @@ public class Driver {
 				System.out.println("inputfilename: The name of the input file to use for the simulation.");
 				System.out.println("     values: a string");
 				System.out.println("outputfilename: The name of the output file to create with results.");
-				System.out.println("     values: a string");
+				System.out.println("     values: a string\n");
+				System.out.println("-----------------------------------------");
+				System.out.println("OPTIONAL ARGUMENTS");
+				System.out.println("-----------------------------------------");
+				System.out.println("\nprefetchbuffer: The size of the prefetcher memory.");
+				System.out.println("     values: any multiple of two");
+				System.out.println("confidencebits: The number of bits to use to determine confidence.");
+				System.out.println("     values: 2 or 3, default is 3");
 				System.exit(0);
 			}
 
@@ -69,13 +82,24 @@ public class Driver {
 				assoc = Integer.parseInt((args[3]));
 				filein = args[4];
 				fileout = args[5];
+				if (args.length == 8) {
+					buffer = Integer.parseInt(args[6]);
+					confidenceBits = Integer.parseInt(args[7]);
+					prefetcher = true;
+				}
 			} catch (Exception e) {
 				System.out.println("Mismatched argument types.\nEnter help as the only argument to view the format.");
 				System.exit(0);
 			}
 
-			if (totalsize % 2 != 0 || blocksize % 2 != 0 || assoc % 2 != 0) {
+			if (!Utility.isPowerOfTwo(totalsize) || !Utility.isPowerOfTwo(blocksize) || !Utility.isPowerOfTwo(assoc)
+					|| !Utility.isPowerOfTwo(buffer)) {
 				System.out.println("Number not a multiple of two.  Rerun and try again.");
+				System.exit(0);
+			}
+
+			if (confidenceBits < 2 || confidenceBits > 3) {
+				System.out.println("Confidence bits out of range.  Must be 2 or 3.  Rerun and try again.");
 				System.exit(0);
 			}
 
@@ -94,6 +118,10 @@ public class Driver {
 			System.out.println("Cache Size: " + totalsize);
 			System.out.println("Block Size: " + blocksize);
 			System.out.println("Associativity: " + assoc);
+			if (prefetcher) {
+				System.out.println("Prefetch Buffer: " + buffer);
+				System.out.println("Confidence Bits: " + confidenceBits);
+			}
 			System.out.println("Input Filename: " + filein);
 			System.out.println("Output Filename: " + fileout + ".txt");
 
@@ -102,6 +130,10 @@ public class Driver {
 			printer.println("Cache Size: " + totalsize);
 			printer.println("Block Size: " + blocksize);
 			printer.println("Associativity: " + assoc);
+			if (prefetcher) {
+				printer.println("Prefetch Buffer: " + buffer);
+				printer.println("Confidence Bits: " + confidenceBits);
+			}
 			printer.println("Input Filename: " + filein);
 			printer.println("Output Filename: " + fileout + ".txt");
 			printer.println("\n");
@@ -144,21 +176,35 @@ public class Driver {
 			CacheSim cc = null;
 			// Determine the type of cache to create.
 			if (type.equals("s")) {
-				System.out.println("Creating instruction cache...");
-				Cache c = new Cache(totalsize / 2, blocksize, assoc);
-				System.out.println("Creating data cache...");
-				Cache c2 = new Cache(totalsize / 2, blocksize, assoc);
+				int splitsize = totalsize / 2;
+				System.out.println("Creating " + (splitsize / 1000) + " KB instruction cache...");
+				Cache c = new Cache(splitsize, blocksize, assoc);
+				System.out.println("Creating " + (splitsize / 1000) + " KB data cache...");
+				Cache c2 = new Cache(splitsize, blocksize, assoc);
 				Cache split[] = { c, c2 };
 				cc = new CacheSim(split);
+				if (prefetcher) {
+					System.out.println("Building prefetcher...");
+					System.out.println("Creating " + buffer + " buffer size prefetcher...");
+					StridePrefetcher p = new StridePrefetcher(buffer, confidenceBits, blocksize);
+					cc = new CacheSim(split, p);
+				}
 			} else if (type.equals("u")) {
-				System.out.println("Creating unified cache...");
+				System.out.println("Creating unified " + (totalsize / 1000) + " KB cache...");
 				Cache c = new Cache(totalsize, blocksize, assoc);
 				Cache unified[] = { c };
 				cc = new CacheSim(unified);
+				if (prefetcher) {
+					System.out.println("Building prefetcher...");
+					System.out.println("Creating " + buffer + " buffer size prefetcher...");
+					StridePrefetcher p = new StridePrefetcher(buffer, confidenceBits, blocksize);
+					cc = new CacheSim(unified, p);
+				}
 			} else {
 				System.out.println("Invalid argument for type. Rerun and try again.");
 				System.exit(0);
 			}
+
 			System.out.println("Setup complete.");
 
 			// Starts the simulation.
